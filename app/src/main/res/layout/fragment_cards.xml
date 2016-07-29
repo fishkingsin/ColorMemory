@@ -1,0 +1,133 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black_overlay"
+    tools:context="com.example.colormemory.CardsFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <GridLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:columnCount="4"
+        android:rowCount="4"
+        android:layout_gravity="center">
+        <!--row0-->
+        <FrameLayout android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_column="0"
+            android:layout_row="0"
+            
+            android:padding="5dp"
+            android:id="@+id/card1" />
+        <FrameLayout android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_column="1"
+            android:layout_row="0"
+            
+            android:padding="5dp"
+            android:id="@+id/card2"/>
+        <FrameLayout android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_column="2"
+            android:layout_row="0"
+            
+            android:padding="5dp"
+            android:id="@+id/card3"/>
+        <FrameLayout android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_column="3"
+            android:layout_row="0"
+            
+            android:padding="5dp"
+            android:id="@+id/card4"/>
+        <!--row1-->
+        <FrameLayout android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_column="0"
+            android:layout_row="1"
+            
+            android:padding="5dp"
+            android:id="@+id/card5"/>
+        <FrameLayout android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_column="1"
+            android:layout_row="1"
+            
+            android:padding="5dp"
+            android:id="@+id/card6"/>
+        <FrameLayout android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_column="2"
+            android:layout_row="1"
+            
+            android:padding="5dp"
+            android:id="@+id/card7"/>
+        <FrameLayout android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_column="3"
+            android:layout_row="1"
+            
+            android:padding="5dp"
+            android:id="@+id/card8"/>
+        <!--row2-->
+        <FrameLayout android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_column="0"
+            android:layout_row="2"
+            
+            android:padding="5dp"
+            android:id="@+id/card9"/>
+        <FrameLayout android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_column="1"
+            android:layout_row="2"
+            
+            android:padding="5dp"
+            android:id="@+id/card10"/>
+        <FrameLayout android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_column="2"
+            android:layout_row="2"
+            
+            android:padding="5dp"
+            android:id="@+id/card11"/>
+        <FrameLayout android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_column="3"
+            android:layout_row="2"
+            
+            android:padding="5dp"
+            android:id="@+id/card12"/>
+        <!--row3-->
+        <FrameLayout android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_column="0"
+            android:layout_row="3"
+            
+            android:padding="5dp"
+            android:id="@+id/card13"/>
+        <FrameLayout android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_column="1"
+            android:layout_row="3"
+            
+            android:padding="5dp"
+            android:id="@+id/card14"/>
+        <FrameLayout android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_column="2"
+            android:layout_row="3"
+            
+            android:padding="5dp"
+            android:id="@+id/card15"/>
+        <FrameLayout android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_column="3"
+            android:layout_row="3"
+            
+            android:padding="5dp"
+            android:id="@+id/card16"/>
+    </GridLayout>
+
+</FrameLayout>
