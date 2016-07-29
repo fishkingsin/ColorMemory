@@ -1,14 +1,16 @@
 package com.example.colormemory;
 
-import android.app.Activity;
 import android.content.Context;
-import android.net.Uri;
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -46,9 +48,12 @@ public class CardsFragment extends Fragment  {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_cards, container, false);
-
+        ArrayList queue = new ArrayList<>(Arrays.asList(cardImages));
+        Random randomGenerator = new Random();
         for (Integer i : cards) {
-            CardFragment fragment = new CardFragment();
+            int index = randomGenerator.nextInt(queue.size());
+            Integer imageId = (Integer) queue.remove(index);
+            CardFragment fragment = CardFragment.newInstance(imageId);
             fragment.setListener(this);
             getFragmentManager()
                     .beginTransaction()
@@ -70,9 +75,7 @@ public class CardsFragment extends Fragment  {
     @Override
     public void onDetach() {
         super.onDetach();
-        while(getFragmentManager().getBackStackEntryCount()>0){
-            getFragmentManager().popBackStackImmediate();
-        }
+
     }
 
 

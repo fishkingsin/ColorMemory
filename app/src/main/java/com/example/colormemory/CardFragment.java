@@ -1,13 +1,17 @@
 package com.example.colormemory;
 
 import android.content.Context;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.widget.ImageView;
 
 
 /**
@@ -17,17 +21,18 @@ import android.view.ViewGroup;
  * Use the {@link CardFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CardFragment extends Fragment implements CardFrontFragment.CardFrontFragmentListener {
+public class CardFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     private static final String TAG = CardsFragment.class.getSimpleName();
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private int mParam1;
+
     boolean isFlipped = false;
+    private ImageView image1;
+    private ImageView image2;
 
     public CardFragment() {
         // Required empty public constructor
@@ -38,15 +43,15 @@ public class CardFragment extends Fragment implements CardFrontFragment.CardFron
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+
      * @return A new instance of fragment CardFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static CardFragment newInstance(String param1, String param2) {
+    public static CardFragment newInstance(int param1) {
         CardFragment fragment = new CardFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putInt(ARG_PARAM1, param1);
+
         fragment.setArguments(args);
         return fragment;
     }
@@ -55,8 +60,8 @@ public class CardFragment extends Fragment implements CardFrontFragment.CardFron
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mParam1 = getArguments().getInt(ARG_PARAM1);
+
         }
     }
 
@@ -65,13 +70,32 @@ public class CardFragment extends Fragment implements CardFrontFragment.CardFron
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_card, container, false);
-        CardFrontFragment frontFragment = new CardFrontFragment();
-        frontFragment.setListener(this);
-        getFragmentManager()
-                .beginTransaction()
-                .replace(R.id.card, frontFragment)
-                .commit();
+
+        image1 = (ImageView) view.findViewById(R.id.ImageView01);
+        image2 = (ImageView) view.findViewById(R.id.ImageView02);
+image2.setImageResource(mParam1);
+        image2.setVisibility(View.GONE);
+        image1.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                if (isFlipped) {
+                    isFlipped = false;
+                    applyRotation(0, 90);
+
+
+                } else {
+                    isFlipped = true;
+                    applyRotation(0, -90);
+
+                }
+            }
+        });
         return view;
+    }
+
+    @Override
+    public void onResume() {
+
+        super.onResume();
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -95,33 +119,27 @@ public class CardFragment extends Fragment implements CardFrontFragment.CardFron
 
     }
 
-    @Override
-    public void onCardFrontTouched(Fragment fragment) {
-        Log.d(TAG, "CardFrontFragment onCardTouched:" + fragment.getTag());
+    private void applyRotation(float start, float end) {
+// Find the center of image
+        final float centerX = image1.getWidth() / 2.0f;
+        final float centerY = image1.getHeight() / 2.0f;
+
+// Create a new 3D rotation with the supplied parameter
+// The animation listener is used to trigger the next animation
+        final Flip3dAnimation rotation =
+                new Flip3dAnimation(start, end, centerX, centerY);
+        rotation.setDuration(100);
+        rotation.setFillAfter(true);
+        rotation.setInterpolator(new AccelerateInterpolator());
+        rotation.setAnimationListener(new DisplayNextView(isFlipped, image1, image2));
+
         if (isFlipped) {
-
+            image1.startAnimation(rotation);
         } else {
-            getFragmentManager()
-                    .beginTransaction()
-
-                    // Replace the default fragment animations with animator resources representing
-                    // rotations when switching to the back of the card, as well as animator
-                    // resources representing rotations when flipping back to the front (e.g. when
-                    // the system Back button is pressed).
-                    .setCustomAnimations(
-                            R.animator.card_flip_right_in, R.animator.card_flip_right_out,
-                            R.animator.card_flip_left_in, R.animator.card_flip_left_out)
-                    // Replace any fragments currently in the container view with a fragment
-                    // representing the next page (indicated by the just-incremented currentPage
-                    // variable).
-                    .replace(R.id.card, new CardBackFragment())
-
-                    // Add this transaction to the back stack, allowing users to press Back
-                    // to get to the front of the card.
-                    .addToBackStack(null)
-
-                    // Commit the transaction.
-                    .commit();
+            image2.startAnimation(rotation);
         }
+
     }
+
+
 }
