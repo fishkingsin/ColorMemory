@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,13 +13,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * to handle interaction events.
  * create an instance of this fragment.
  */
-public class CardsFragment extends Fragment  {
+public class CardsFragment extends Fragment implements CardFragment.CardsFragmentListener {
     private static final String TAG = CardsFragment.class.getSimpleName();
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -33,6 +35,7 @@ public class CardsFragment extends Fragment  {
             R.drawable.colour3, R.drawable.colour3, R.drawable.colour4, R.drawable.colour4,
             R.drawable.colour4, R.drawable.colour4, R.drawable.colour6, R.drawable.colour6,
             R.drawable.colour7, R.drawable.colour7, R.drawable.colour8, R.drawable.colour8};
+    private ArrayList<String> clickedId = new ArrayList<>();
 
     public CardsFragment() {
         // Required empty public constructor
@@ -78,7 +81,30 @@ public class CardsFragment extends Fragment  {
 
     }
 
+    @Override
+    public void onCardFlip(CardFragment cardFragment, Integer imageID) {
+        Log.d(TAG,"onCardFlip "+imageID);
+        if(clickedId.size()>=2){
+            for (Integer i : cards) {
+                CardFragment _cardFragment = (CardFragment) getFragmentManager().findFragmentByTag(i.toString());
+                _cardFragment.enableClick();
+                _cardFragment.retoreCard();
+            }
+            clickedId.clear();
 
+        }
+    }
 
+    @Override
+    public void onImageClicked(CardFragment cardFragment, int imageID) {
+        if(clickedId.size()>=2){
+            for (Integer i : cards) {
+                CardFragment _cardFragment = (CardFragment) getFragmentManager().findFragmentByTag(i.toString());
+                _cardFragment.disableClick();
+            }
+        }else {
+            clickedId.add(cardFragment.getTag());
+        }
 
+    }
 }

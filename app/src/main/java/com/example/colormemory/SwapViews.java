@@ -5,6 +5,7 @@ package com.example.colormemory;
  * All Right Reserved
  */
 import android.view.View;
+import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 
@@ -12,11 +13,13 @@ public final class SwapViews implements Runnable {
     private boolean mIsFirstView;
     ImageView image1;
     ImageView image2;
+    private Animation.AnimationListener listener;
 
-    public SwapViews(boolean isFirstView, ImageView image1, ImageView image2) {
+    public SwapViews(boolean isFirstView, ImageView image1, ImageView image2,Animation.AnimationListener listener) {
         mIsFirstView = isFirstView;
         this.image1 = image1;
         this.image2 = image2;
+        this.listener = listener;
     }
 
     public void run() {
@@ -41,7 +44,7 @@ public final class SwapViews implements Runnable {
         rotation.setDuration(500);
         rotation.setFillAfter(true);
         rotation.setInterpolator(new DecelerateInterpolator());
-
+        rotation.setAnimationListener(listener);
         if (mIsFirstView) {
             image2.startAnimation(rotation);
         } else {

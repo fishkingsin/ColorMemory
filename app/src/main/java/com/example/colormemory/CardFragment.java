@@ -1,17 +1,17 @@
 package com.example.colormemory;
 
 import android.content.Context;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
 import android.widget.ImageView;
+
 
 
 /**
@@ -21,18 +21,19 @@ import android.widget.ImageView;
  * Use the {@link CardFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CardFragment extends Fragment {
+public class CardFragment extends Fragment implements Animation.AnimationListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String TAG = CardsFragment.class.getSimpleName();
 
     // TODO: Rename and change types of parameters
-    private int mParam1;
+    private int imageID;
 
     boolean isFlipped = false;
     private ImageView image1;
     private ImageView image2;
+    private CardsFragmentListener mListener;
 
     public CardFragment() {
         // Required empty public constructor
@@ -60,7 +61,7 @@ public class CardFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getInt(ARG_PARAM1);
+            imageID = getArguments().getInt(ARG_PARAM1);
 
         }
     }
@@ -73,10 +74,19 @@ public class CardFragment extends Fragment {
 
         image1 = (ImageView) view.findViewById(R.id.ImageView01);
         image2 = (ImageView) view.findViewById(R.id.ImageView02);
-image2.setImageResource(mParam1);
+        image2.setImageResource(imageID);
         image2.setVisibility(View.GONE);
+        enableClick();
+        return view;
+    }
+    public void disableClick() {
+        image1.setOnClickListener(null);
+    }
+    public void enableClick() {
         image1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                mListener.onImageClicked(CardFragment.this,imageID);
+                image1.setOnClickListener(null);
                 if (isFlipped) {
                     isFlipped = false;
                     applyRotation(0, 90);
@@ -89,7 +99,7 @@ image2.setImageResource(mParam1);
                 }
             }
         });
-        return view;
+
     }
 
     @Override
@@ -115,8 +125,8 @@ image2.setImageResource(mParam1);
 
     }
 
-    public void setListener(Fragment fragment) {
-
+    public void setListener(CardsFragmentListener listener) {
+        mListener = listener;
     }
 
     private void applyRotation(float start, float end) {
@@ -131,15 +141,60 @@ image2.setImageResource(mParam1);
         rotation.setDuration(100);
         rotation.setFillAfter(true);
         rotation.setInterpolator(new AccelerateInterpolator());
-        rotation.setAnimationListener(new DisplayNextView(isFlipped, image1, image2));
+
 
         if (isFlipped) {
+            rotation.setAnimationListener(new DisplayNextView(isFlipped, image1, image2,this));
             image1.startAnimation(rotation);
         } else {
+            rotation.setAnimationListener(new DisplayNextView(isFlipped, image1, image2, new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            }));
             image2.startAnimation(rotation);
         }
 
     }
 
 
+    @Override
+    public void onAnimationStart(Animation animation) {
+
+    }
+
+    @Override
+    public void onAnimationEnd(Animation animation) {
+        Log.d(TAG,"onAnimationEnd "+animation);
+        mListener.onCardFlip(this, imageID);
+    }
+
+    @Override
+    public void onAnimationRepeat(Animation animation) {
+
+    }
+
+    public void retoreCard() {
+        if(isFlipped) {
+            isFlipped = false;
+            applyRotation(0, 90);
+        }
+    }
+
+    public interface CardsFragmentListener {
+        void onCardFlip(CardFragment cardFragment, Integer imageID);
+
+        void onImageClicked(CardFragment cardFragment, int imageID);
+    }
 }
