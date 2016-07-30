@@ -2,6 +2,7 @@ package com.example.colormemory;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,15 +12,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-/**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- */
-public class MainActivity extends Activity implements CardsFragment.ScordListener {
+import com.example.colormemory.data.DatabaseHandler;
+import com.example.colormemory.data.ScoreObject;
+import com.example.colormemory.fragments.CardsFragment;
+import com.example.colormemory.fragments.NameInputFragment;
 
+/**
+ *
+ *
+ */
+public class MainActivity extends Activity implements CardsFragment.ScordListener,
+        NameInputFragment.OnFragmentInteractionListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static final String TAG_HISCOREFRAGMENT = "HiScoreFragment";
     private static final String TAG_NAMEINPUTFRAGMENT = "NameInputFragment";
     TextView titleTextView;
 
@@ -48,6 +53,11 @@ public class MainActivity extends Activity implements CardsFragment.ScordListene
 
     }
 
+    /**
+     * The High Scores button must be visible to the top right of the window.
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -56,26 +66,31 @@ public class MainActivity extends Activity implements CardsFragment.ScordListene
     }
 
     @Override
-    public boolean onMenuItemSelected(int featureId, MenuItem item)  {
-        if(item.getItemId() == R.id.high_score){
-            if(getFragmentManager().findFragmentByTag(TAG_HISCOREFRAGMENT)==null) {
+    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+        if (item.getItemId() == R.id.high_score) {
+            /**
+             * when TAG_NAMEINPUTFRAGMENT not found , menu able to click
+             */
+            if (getFragmentManager().findFragmentByTag(TAG_NAMEINPUTFRAGMENT) == null) {
                 showHiScore();
-            }else{
-                getFragmentManager().popBackStack();
             }
+
         }
-        //How to determine which menu clicked?
         return false;
     }
 
-    private void showHiScore() {
-        getFragmentManager()
-                .beginTransaction()
-                .setCustomAnimations(R.animator.enter_from_bottom, R.animator.exit_to_top)
-                .replace(R.id.overlay_fragment_container, HiScoreFragment.newInstance(" "," "),TAG_HISCOREFRAGMENT)
-                .commit();
+    /**
+     * show {@link HiScoreActivity}
+     */
+    public void showHiScore() {
+        Intent i = new Intent(MainActivity.this, HiScoreActivity.class);
+        startActivity(i);
     }
 
+    /**
+     * receive score from {@link CardsFragment} during game
+     * @param mScore
+     */
     @Override
     public void onScore(int mScore) {
         try {
@@ -85,24 +100,50 @@ public class MainActivity extends Activity implements CardsFragment.ScordListene
         }
     }
 
+    /**
+     * receive score from {@link CardsFragment} when game end
+     * @param mScore
+     */
     @Override
-    public void onGameEnded() {
+    public void onGameEnded(int mScore) {
         Log.d(TAG, "onGameEnded");
-        //show finish
-        //show imput name
-            // show high score
-                //
-        showNameInput();
+        showNameInput(mScore);
 
 
     }
 
-    private void showNameInput() {
-        /*The game board must be displayed below the logo and high score button*/
+    /**
+     * pass the score to {@link NameInputFragment}
+     * @param mScore
+     */
+    private void showNameInput(int mScore) {
+        /**
+         * The game board must be displayed below the logo and high score button
+         * */
         getFragmentManager()
                 .beginTransaction()
                 .setCustomAnimations(R.animator.enter_from_bottom, R.animator.exit_to_top)
-                .replace(R.id.overlay_fragment_container, NameInputFragment.newInstance(" "," "),TAG_NAMEINPUTFRAGMENT)
+                .replace(R.id.overlay_fragment_container, NameInputFragment.newInstance(mScore), TAG_NAMEINPUTFRAGMENT)
                 .commit();
+    }
+
+    /**
+     * when user inputed name , remove name input , showHiScore , reset game
+     * @param score
+     * @param name
+     */
+    @Override
+    public void onNameChanged(int score, String name) {
+        DatabaseHandler db = DatabaseHandler.getInstance(this);
+        db.addScore(new ScoreObject(name, score));
+
+        getFragmentManager().beginTransaction().
+                remove(getFragmentManager().findFragmentById(R.id.overlay_fragment_container)).commit();
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, new CardsFragment())
+                .commit();
+        titleTextView.setText(Integer.toString(0));
+        showHiScore();
     }
 }

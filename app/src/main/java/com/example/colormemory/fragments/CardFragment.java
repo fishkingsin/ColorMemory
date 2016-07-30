@@ -1,7 +1,6 @@
-package com.example.colormemory;
+package com.example.colormemory.fragments;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -11,6 +10,10 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.widget.ImageView;
+
+import com.example.colormemory.animation.DisplayNextView;
+import com.example.colormemory.animation.Flip3dAnimation;
+import com.example.colormemory.R;
 
 
 /**
@@ -22,8 +25,8 @@ import android.widget.ImageView;
  */
 public class CardFragment extends Fragment implements Animation.AnimationListener {
     // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
+
+    private static final String ARG_IMAGE_PARAM = "param1";
     private static final String TAG = CardsFragment.class.getSimpleName();
 
     // TODO: Rename and change types of parameters
@@ -48,14 +51,14 @@ public class CardFragment extends Fragment implements Animation.AnimationListene
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
+     * @param imageIDPara Parameter 1.
      * @return A new instance of fragment CardFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static CardFragment newInstance(int param1) {
+    public static CardFragment newInstance(int imageIDPara) {
         CardFragment fragment = new CardFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_PARAM1, param1);
+        args.putInt(ARG_IMAGE_PARAM, imageIDPara);
 
         fragment.setArguments(args);
         return fragment;
@@ -65,7 +68,7 @@ public class CardFragment extends Fragment implements Animation.AnimationListene
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            imageID = getArguments().getInt(ARG_PARAM1);
+            imageID = getArguments().getInt(ARG_IMAGE_PARAM);
 
         }
     }
@@ -116,10 +119,6 @@ public class CardFragment extends Fragment implements Animation.AnimationListene
         super.onResume();
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -186,7 +185,6 @@ public class CardFragment extends Fragment implements Animation.AnimationListene
 
     @Override
     public void onAnimationEnd(Animation animation) {
-//        Log.d(TAG,"onAnimationEnd "+animation);
         mListener.onCardFlip(this, imageID);
     }
 
@@ -206,6 +204,11 @@ public class CardFragment extends Fragment implements Animation.AnimationListene
         }
     }
 
+    /**
+     * setter
+     *
+     * @param isMatch
+     */
     public void setIsMatch(boolean isMatch) {
         this.isMatch = isMatch;
     }

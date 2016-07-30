@@ -1,23 +1,22 @@
-package com.example.colormemory;
+package com.example.colormemory.fragments;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.TextView;
+
+import com.example.colormemory.R;
 
 import rx.Observable;
 import rx.android.Events;
 import rx.android.Properties;
 import rx.util.functions.Action1;
 import rx.util.functions.Func1;
-import rx.util.functions.Func2;
 
 
 /**
@@ -29,16 +28,17 @@ import rx.util.functions.Func2;
  * create an instance of this fragment.
  */
 public class NameInputFragment extends Fragment {
+    private static final String ARG_PARAM1 = "Score";
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+//    private String mParam1;
+//    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private int mParam1;
 
     public NameInputFragment() {
         // Required empty public constructor
@@ -49,15 +49,14 @@ public class NameInputFragment extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+
      * @return A new instance of fragment NameInputFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static NameInputFragment newInstance(String param1, String param2) {
+    public static NameInputFragment newInstance(int param1) {
         NameInputFragment fragment = new NameInputFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putInt(ARG_PARAM1, param1);
         fragment.setArguments(args);
         return fragment;
     }
@@ -66,8 +65,7 @@ public class NameInputFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mParam1 = getArguments().getInt(ARG_PARAM1);
         }
     }
 
@@ -76,44 +74,51 @@ public class NameInputFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_name_input, container, false);
+        TextView yourScoreTextview = (TextView) view.findViewById(R.id.yourScoreTextview);
+        yourScoreTextview.setText(Integer.toString(mParam1));
         EditText editText = (EditText) view.findViewById(R.id.editText);
-        final Observable<String> nameText  = Events.text(editText);
+        final Observable<String> nameText = Events.text(editText);
         final Button submitButton = (Button) view.findViewById(R.id.submitButton);
         final Observable<Object> submitButtonClick = Events.click(submitButton);
+
+        //auto button enable when text is empty
         nameText
                 .map(new Func1<String, Boolean>() {
-                    @Override public Boolean call(String text) {
+                    @Override
+                    public Boolean call(String text) {
                         return !text.trim().equals("");
                     }
                 })
                 .subscribe(Properties.enabledFrom(submitButton));
 
         submitButtonClick
-                .subscribe(new Action1<Object>() {
-                    @Override public void call(Object object) {
-                        //inject DB?
-                        //notify parent / main?
+                .flatMap(new Func1<Object, Observable<String>>() {
+                    @Override
+                    public Observable<String> call(Object o) {
+                        return nameText;
+                    }
+                })
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String name) {
+                        if (mListener != null) {
+                            mListener.onNameChanged(mParam1,name);
+                        }
                     }
                 });
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
     }
 
     @Override
@@ -127,13 +132,13 @@ public class NameInputFragment extends Fragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
+     * <p/>
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onNameChanged(int mParam1, String name);
     }
 }

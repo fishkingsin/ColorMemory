@@ -1,4 +1,4 @@
-package com.example.colormemory;
+package com.example.colormemory.animation;
 
 /**
  * Created by james on 29/7/16.

@@ -1,4 +1,4 @@
-package com.example.colormemory;
+package com.example.colormemory.fragments;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -8,6 +8,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.colormemory.BuildConfig;
+import com.example.colormemory.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,19 +27,25 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class CardsFragment extends Fragment implements CardFragment.CardsFragmentListener {
     private static final String TAG = CardsFragment.class.getSimpleName();
     // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
+    /**
+     * card view id
+     */
     private static Integer[] cards = new Integer[]{
             R.id.card1, R.id.card2, R.id.card3, R.id.card4,
             R.id.card5, R.id.card6, R.id.card7, R.id.card8,
             R.id.card9, R.id.card10, R.id.card11, R.id.card12,
             R.id.card13, R.id.card14, R.id.card15, R.id.card16};
 
+    /**
+     * drawable id
+     */
     private static Integer[] cardImages = new Integer[]{
             R.drawable.colour1, R.drawable.colour1, R.drawable.colour2, R.drawable.colour2,
             R.drawable.colour3, R.drawable.colour3, R.drawable.colour4, R.drawable.colour4,
-            R.drawable.colour4, R.drawable.colour4, R.drawable.colour6, R.drawable.colour6,
+            R.drawable.colour5, R.drawable.colour5, R.drawable.colour6, R.drawable.colour6,
             R.drawable.colour7, R.drawable.colour7, R.drawable.colour8, R.drawable.colour8};
-    //    private HashMap<String, Integer> clickedId = new HashMap<>();
+
     private AtomicInteger fisrtImageID = new AtomicInteger();
     private AtomicInteger secondImageID = new AtomicInteger();
     private String firstClickTag = "";
@@ -65,6 +74,9 @@ public class CardsFragment extends Fragment implements CardFragment.CardsFragmen
         return view;
     }
 
+    /**
+     * init card fragments
+     */
     private void initCards() {
         ArrayList queue = new ArrayList<>(Arrays.asList(cardImages));
         Random randomGenerator = new Random();
@@ -129,7 +141,7 @@ public class CardsFragment extends Fragment implements CardFragment.CardsFragmen
 
 
             if (value1.equals(value2)) {
-//                Log.d(TAG, "onCardFlip Match");
+
                 mScore += 2;
                 mListener.onScore(mScore);
 
@@ -155,17 +167,14 @@ public class CardsFragment extends Fragment implements CardFragment.CardsFragmen
 
 
                 }
-                isGameEnd = (BuildConfig.BUILD_TYPE.equals("debug")) || isGameEnd;
                 if(isGameEnd){
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            mListener.onGameEnded();
+                            mListener.onGameEnded(mScore);
                         }
                     },500);
 
-
-//                    initCards();
                 }
 
                 firstClickTag = "";
@@ -174,8 +183,10 @@ public class CardsFragment extends Fragment implements CardFragment.CardsFragmen
                 secondImageID.set(0);
             } else {
                 Log.d(TAG, "onCardFlip NOT Match");
-                /*After each round, a brief one (1) second pause should be implemented before scoring to allow the
-                player to see what the second selected card is.*/
+                /**
+                 * After each round, a brief one (1) second pause should be implemented before scoring to allow the
+                 * player to see what the second selected card is.
+                 */
                 mScore--;
                 mListener.onScore(mScore);
                 handler.postDelayed(new Runnable() {
@@ -216,7 +227,6 @@ public class CardsFragment extends Fragment implements CardFragment.CardsFragmen
 
     public interface ScordListener {
         void onScore(int mScore);
-
-        void onGameEnded();
+        void onGameEnded(int mScore);
     }
 }

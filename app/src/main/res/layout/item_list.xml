@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/apk/tools"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    xmlns:autofit="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+        <me.grantland.widget.AutofitTextView
+            android:id="@+id/number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:singleLine="true"
+            android:maxLines="2"
+            android:textSize="40sp"
+            autofit:minTextSize="16sp"
+            android:text="0." />
+        <me.grantland.widget.AutofitTextView
+            android:id="@+id/scoreTextview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:singleLine="true"
+            android:maxLines="2"
+            android:textSize="40sp"
+            autofit:minTextSize="16sp"
+            android:text="Score"
+            android:textAlignment="center" />
+
+        <me.grantland.widget.AutofitTextView
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:singleLine="true"
+            android:maxLines="2"
+            android:textSize="40sp"
+            autofit:minTextSize="16sp"
+            android:text="Name"
+            android:layout_gravity="end"
+            android:textAlignment="viewEnd" />
+    </LinearLayout>
+
+</FrameLayout>
