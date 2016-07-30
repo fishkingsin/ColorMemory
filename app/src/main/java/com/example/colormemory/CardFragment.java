@@ -13,7 +13,6 @@ import android.view.animation.Animation;
 import android.widget.ImageView;
 
 
-
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -35,6 +34,12 @@ public class CardFragment extends Fragment implements Animation.AnimationListene
     private ImageView image2;
     private CardsFragmentListener mListener;
 
+    public boolean isMatch() {
+        return isMatch;
+    }
+
+    private boolean isMatch = false;
+
     public CardFragment() {
         // Required empty public constructor
     }
@@ -44,7 +49,6 @@ public class CardFragment extends Fragment implements Animation.AnimationListene
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
-
      * @return A new instance of fragment CardFragment.
      */
     // TODO: Rename and change types and number of parameters
@@ -79,26 +83,30 @@ public class CardFragment extends Fragment implements Animation.AnimationListene
         enableClick();
         return view;
     }
+
     public void disableClick() {
         image1.setOnClickListener(null);
     }
+
     public void enableClick() {
-        image1.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                mListener.onImageClicked(CardFragment.this,imageID);
-                image1.setOnClickListener(null);
-                if (isFlipped) {
-                    isFlipped = false;
-                    applyRotation(0, 90);
+        if (!isMatch) {
+            image1.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View view) {
+                    mListener.onImageClicked(CardFragment.this, imageID);
+                    image1.setOnClickListener(null);
+                    if (isFlipped) {
+                        isFlipped = false;
+                        applyRotation(0, 90, null);
 
 
-                } else {
-                    isFlipped = true;
-                    applyRotation(0, -90);
+                    } else {
+                        isFlipped = true;
+                        applyRotation(0, -90, null);
 
+                    }
                 }
-            }
-        });
+            });
+        }
 
     }
 
@@ -129,7 +137,7 @@ public class CardFragment extends Fragment implements Animation.AnimationListene
         mListener = listener;
     }
 
-    private void applyRotation(float start, float end) {
+    private void applyRotation(float start, float end, final CardsFragmentListener callback) {
 // Find the center of image
         final float centerX = image1.getWidth() / 2.0f;
         final float centerY = image1.getHeight() / 2.0f;
@@ -144,7 +152,7 @@ public class CardFragment extends Fragment implements Animation.AnimationListene
 
 
         if (isFlipped) {
-            rotation.setAnimationListener(new DisplayNextView(isFlipped, image1, image2,this));
+            rotation.setAnimationListener(new DisplayNextView(isFlipped, image1, image2, this));
             image1.startAnimation(rotation);
         } else {
             rotation.setAnimationListener(new DisplayNextView(isFlipped, image1, image2, new Animation.AnimationListener() {
@@ -155,7 +163,9 @@ public class CardFragment extends Fragment implements Animation.AnimationListene
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
-
+                    if (callback != null) {
+                        callback.onCardFlip(CardFragment.this, imageID);
+                    }
                 }
 
                 @Override
@@ -176,7 +186,7 @@ public class CardFragment extends Fragment implements Animation.AnimationListene
 
     @Override
     public void onAnimationEnd(Animation animation) {
-        Log.d(TAG,"onAnimationEnd "+animation);
+//        Log.d(TAG,"onAnimationEnd "+animation);
         mListener.onCardFlip(this, imageID);
     }
 
@@ -185,12 +195,21 @@ public class CardFragment extends Fragment implements Animation.AnimationListene
 
     }
 
-    public void retoreCard() {
-        if(isFlipped) {
+
+    public void retoreCard(CardsFragmentListener callback) {
+        if (isFlipped && !isMatch) {
+            Log.d(TAG, "retoreCard " + imageID);
             isFlipped = false;
-            applyRotation(0, 90);
+            applyRotation(0, 90, callback);
+        } else {
+            callback.onCardFlip(this, imageID);
         }
     }
+
+    public void setIsMatch(boolean isMatch) {
+        this.isMatch = isMatch;
+    }
+
 
     public interface CardsFragmentListener {
         void onCardFlip(CardFragment cardFragment, Integer imageID);
