@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -125,7 +126,7 @@ public class CardsFragment extends Fragment implements CardFragment.CardsFragmen
 
     @Override
     public void onImageClicked(CardFragment cardFragment, int imageID) {
-        Log.d(TAG, "onImageClicked " + imageID);
+//        Log.d(TAG, "onImageClicked " + imageID);
         cardFragment.disableClick();
 
         if (fisrtImageID.get() == 0) {
@@ -197,7 +198,7 @@ public class CardsFragment extends Fragment implements CardFragment.CardsFragmen
                 fisrtImageID.set(0);
                 secondImageID.set(0);
             } else {
-                Log.d(TAG, "onCardFlip NOT Match");
+//                Log.d(TAG, "onCardFlip NOT Match");
                 /**
                  * After each round, a brief one (1) second pause should be implemented before scoring to allow the
                  * player to see what the second selected card is.
@@ -251,4 +252,5 @@ public class CardsFragment extends Fragment implements CardFragment.CardsFragmen
         void onScore(int mScore);
         void onGameEnded(int mScore);
     }
+
 }

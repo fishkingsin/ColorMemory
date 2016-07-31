@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -145,5 +146,16 @@ public class MainActivity extends Activity implements CardsFragment.ScordListene
                 .commit();
         titleTextView.setText(Integer.toString(0));
         showHiScore();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        if(event.getPointerCount() > 1) {
+            System.out.println("Multitouch detected!");
+            return true;
+        }
+        else
+            return super.onTouchEvent(event);
     }
 }
