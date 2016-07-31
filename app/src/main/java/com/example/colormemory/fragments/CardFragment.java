@@ -15,6 +15,9 @@ import com.example.colormemory.animation.DisplayNextView;
 import com.example.colormemory.animation.Flip3dAnimation;
 import com.example.colormemory.R;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,7 +35,7 @@ public class CardFragment extends Fragment implements Animation.AnimationListene
     // TODO: Rename and change types of parameters
     private int imageID;
 
-    boolean isFlipped = false;
+    AtomicBoolean isFlipped = new AtomicBoolean();
     private ImageView image1;
     private ImageView image2;
     private CardsFragmentListener mListener;
@@ -97,13 +100,13 @@ public class CardFragment extends Fragment implements Animation.AnimationListene
                 public void onClick(View view) {
                     mListener.onImageClicked(CardFragment.this, imageID);
                     image1.setOnClickListener(null);
-                    if (isFlipped) {
-                        isFlipped = false;
+                    if (isFlipped.get()) {
+                        isFlipped.set(false);
                         applyRotation(0, 90, null);
 
 
                     } else {
-                        isFlipped = true;
+                        isFlipped.set(true);
                         applyRotation(0, -90, null);
 
                     }
@@ -145,16 +148,16 @@ public class CardFragment extends Fragment implements Animation.AnimationListene
 // The animation listener is used to trigger the next animation
         final Flip3dAnimation rotation =
                 new Flip3dAnimation(start, end, centerX, centerY);
-        rotation.setDuration(100);
+        rotation.setDuration(10);
         rotation.setFillAfter(true);
         rotation.setInterpolator(new AccelerateInterpolator());
 
 
-        if (isFlipped) {
-            rotation.setAnimationListener(new DisplayNextView(isFlipped, image1, image2, this));
+        if (isFlipped.get()) {
+            rotation.setAnimationListener(new DisplayNextView(true, image1, image2, this));
             image1.startAnimation(rotation);
         } else {
-            rotation.setAnimationListener(new DisplayNextView(isFlipped, image1, image2, new Animation.AnimationListener() {
+            rotation.setAnimationListener(new DisplayNextView(false, image1, image2, new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
 
@@ -195,9 +198,9 @@ public class CardFragment extends Fragment implements Animation.AnimationListene
 
 
     public void retoreCard(CardsFragmentListener callback) {
-        if (isFlipped && !isMatch) {
+        if (isFlipped.get() && !isMatch) {
             Log.d(TAG, "retoreCard " + imageID);
-            isFlipped = false;
+            isFlipped.set(false);
             applyRotation(0, 90, callback);
         } else {
             callback.onCardFlip(this, imageID);

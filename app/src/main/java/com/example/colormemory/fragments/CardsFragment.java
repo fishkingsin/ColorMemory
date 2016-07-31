@@ -52,7 +52,7 @@ public class CardsFragment extends Fragment implements CardFragment.CardsFragmen
     private String firstClickTag = "";
     private String secondClickTag = "";
     private Handler handler;
-    private int mScore = 0;
+    private AtomicInteger mScore = new AtomicInteger();
 
     ScordListener mListener;
 
@@ -118,6 +118,8 @@ public class CardsFragment extends Fragment implements CardFragment.CardsFragmen
     @Override
     public void onCardFlip(CardFragment cardFragment, Integer imageID) {
 
+            mListener.onScore(mScore.get());
+
 
     }
 
@@ -144,13 +146,24 @@ public class CardsFragment extends Fragment implements CardFragment.CardsFragmen
 
             if (value1.equals(value2)) {
 
-                mScore += 2;
-                mListener.onScore(mScore);
+
+                mScore.set(mScore.get()+2);
 
                 for (Integer i : cards) {
                     if (!i.toString().equals(firstClickTag) && !i.toString().equals(secondClickTag)) {
                         CardFragment _cardFragment = (CardFragment) getFragmentManager().findFragmentByTag(i.toString());
                         _cardFragment.enableClick();
+                        _cardFragment.retoreCard(new CardFragment.CardsFragmentListener() {
+                            @Override
+                            public void onCardFlip(CardFragment cardFragment, Integer imageID) {
+                                
+                            }
+
+                            @Override
+                            public void onImageClicked(CardFragment cardFragment, int imageID) {
+
+                            }
+                        });
                     } else {
                         CardFragment _cardFragment = (CardFragment) getFragmentManager().findFragmentByTag(i.toString());
                         _cardFragment.setIsMatch(true);
@@ -173,9 +186,9 @@ public class CardsFragment extends Fragment implements CardFragment.CardsFragmen
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            mListener.onGameEnded(mScore);
+                            mListener.onGameEnded(mScore.get());
                         }
-                    },500);
+                    },1000);
 
                 }
 
@@ -189,8 +202,8 @@ public class CardsFragment extends Fragment implements CardFragment.CardsFragmen
                  * After each round, a brief one (1) second pause should be implemented before scoring to allow the
                  * player to see what the second selected card is.
                  */
-                mScore--;
-                mListener.onScore(mScore);
+                mScore.set(mScore.get()-1);
+
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
