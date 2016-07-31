@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.colormemory.BuildConfig;
+import com.example.colormemory.MainActivity;
 import com.example.colormemory.R;
 
 import java.util.ArrayList;
@@ -56,6 +57,7 @@ public class CardsFragment extends Fragment implements CardFragment.CardsFragmen
     ScordListener mListener;
 
     public CardsFragment() {
+
         // Required empty public constructor
     }
 
@@ -215,13 +217,20 @@ public class CardsFragment extends Fragment implements CardFragment.CardsFragmen
                         firstClickTag = "";
                         secondClickTag = "";
                     }
-                }, (BuildConfig.BUILD_TYPE.equals("debug"))?250:1000);
+                }, 1000);
 
 
             }
 
         }
 
+
+    }
+
+    public static CardsFragment getInstance(Context context) {
+        CardsFragment fragment = new CardsFragment();
+        fragment.mListener = (ScordListener) context;
+        return fragment;
 
     }
 

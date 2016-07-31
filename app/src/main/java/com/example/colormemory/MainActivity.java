@@ -35,7 +35,7 @@ public class MainActivity extends Activity implements CardsFragment.ScordListene
         setContentView(R.layout.activity_main);
         getFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_container, new CardsFragment())
+                .replace(R.id.fragment_container, CardsFragment.getInstance(this))
                 .commit();
         try {
             getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
@@ -123,7 +123,7 @@ public class MainActivity extends Activity implements CardsFragment.ScordListene
         getFragmentManager()
                 .beginTransaction()
                 .setCustomAnimations(R.animator.enter_from_bottom, R.animator.exit_to_top)
-                .replace(R.id.overlay_fragment_container, NameInputFragment.newInstance(mScore), TAG_NAMEINPUTFRAGMENT)
+                .replace(R.id.overlay_fragment_container, NameInputFragment.newInstance(mScore,this ), TAG_NAMEINPUTFRAGMENT)
                 .commit();
     }
 
@@ -141,7 +141,7 @@ public class MainActivity extends Activity implements CardsFragment.ScordListene
                 remove(getFragmentManager().findFragmentById(R.id.overlay_fragment_container)).commit();
         getFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_container, new CardsFragment())
+                .replace(R.id.fragment_container, CardsFragment.getInstance(this))
                 .commit();
         titleTextView.setText(Integer.toString(0));
         showHiScore();

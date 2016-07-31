@@ -53,8 +53,9 @@ public class NameInputFragment extends Fragment {
      * @return A new instance of fragment NameInputFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static NameInputFragment newInstance(int param1) {
+    public static NameInputFragment newInstance(int param1,Context context) {
         NameInputFragment fragment = new NameInputFragment();
+        fragment.mListener = (OnFragmentInteractionListener) context;
         Bundle args = new Bundle();
         args.putInt(ARG_PARAM1, param1);
         fragment.setArguments(args);

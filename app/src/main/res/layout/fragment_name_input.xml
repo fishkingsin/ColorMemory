@@ -27,13 +27,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Your Score : " />
+                android:text="@string/your_score" />
 
             <TextView
                 android:id="@+id/yourScoreTextview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="16" />
+                />
         </LinearLayout>
 
         <com.wrapp.floatlabelededittext.FloatLabeledEditText
@@ -45,7 +45,7 @@
                 android:id="@+id/editText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Type Your Name Here"
+                android:hint="@string/type_your_name_here"
                 android:inputType="text"
                 android:lines="1" />
         </com.wrapp.floatlabelededittext.FloatLabeledEditText>
@@ -55,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="New Button" />
+            android:text="@string/ok" />
     </LinearLayout>
 
 </FrameLayout>

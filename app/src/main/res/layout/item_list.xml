@@ -2,16 +2,17 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/apk/tools"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="wrap_content"
     xmlns:autofit="http://schemas.android.com/tools"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="10dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal">
         <me.grantland.widget.AutofitTextView
-            android:id="@+id/number"
+            android:id="@+id/rankTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -19,7 +20,8 @@
             android:maxLines="2"
             android:textSize="40sp"
             autofit:minTextSize="16sp"
-            android:text="0." />
+            android:text="0."
+            android:layout_gravity="center" />
         <me.grantland.widget.AutofitTextView
             android:id="@+id/scoreTextview"
             android:layout_width="match_parent"
@@ -30,7 +32,8 @@
             android:textSize="40sp"
             autofit:minTextSize="16sp"
             android:text="Score"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:layout_gravity="center" />
 
         <me.grantland.widget.AutofitTextView
             android:id="@+id/name"
@@ -42,7 +45,7 @@
             android:textSize="40sp"
             autofit:minTextSize="16sp"
             android:text="Name"
-            android:layout_gravity="end"
+            android:layout_gravity="center|end"
             android:textAlignment="viewEnd" />
     </LinearLayout>
 

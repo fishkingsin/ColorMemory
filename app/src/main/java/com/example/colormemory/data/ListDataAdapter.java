@@ -20,9 +20,6 @@ import com.example.colormemory.R;
 import java.util.List;
 import java.util.Random;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-
 /**
  * Created by jpardogo on 22/03/2014.
  */
@@ -62,8 +59,8 @@ public class ListDataAdapter extends ArrayAdapter<ScoreObject> {
         } else {
             //reserve for reused logic
         }
-        TextView numberTextview = (TextView) convertView.findViewById(R.id.number);
-        numberTextview.setText(Integer.toString(position));
+        TextView rankTextView = (TextView) convertView.findViewById(R.id.rankTextView);
+        rankTextView.setText("Rank:"+Integer.toString(position+1));
         TextView scoreTextview = (TextView) convertView.findViewById(R.id.scoreTextview);
         scoreTextview.setText(Integer.toString(getItem(position).score));
         TextView nameTextview = (TextView) convertView.findViewById(R.id.name);
